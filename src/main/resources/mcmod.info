@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "slotbinding",
+    "name": "Slot Binding",
+    "description": "NEU Slot Binding without NEU",
+    "version": "1.0",
+    "mcversion": "1.8.9",
+    "authorList": ["NyteSky"],
+    "credits": "Built with Forge",
+    "url": "",
+    "updateUrl": "",
+    "screenshots": [],
+    "logoFile": ""
+  }
+]
+
