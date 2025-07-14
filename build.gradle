@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.2"
+version = "1.1.0"
 group = "me.nytesky.slotbinding"
 archivesBaseName = "slotbinding"
 
@@ -21,12 +21,10 @@ minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
     mappings = "stable_20"
-    // makeObfSourceJar = false // Enable if you want to disable SRG-named source jars
+    // makeObfSourceJar = false
 }
 
 dependencies {
-    // Place your custom dependencies here if needed
-    // compile "group:artifact:version"
 }
 
 processResources {

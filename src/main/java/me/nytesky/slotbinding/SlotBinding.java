@@ -24,6 +24,7 @@ public class SlotBinding {
         KeyHandler.init();
         MinecraftForge.EVENT_BUS.register(new GuiKeyHandler());
         MinecraftForge.EVENT_BUS.register(new GuiClickHandler());
+        MinecraftForge.EVENT_BUS.register(new HoverEffect());
 
     }
 }
