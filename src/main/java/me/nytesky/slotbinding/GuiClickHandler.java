@@ -1,6 +1,7 @@
 package me.nytesky.slotbinding;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -143,14 +144,13 @@ public class GuiClickHandler {
         // not bound -> return
         if (!(ConfigManager.config.slotBinds.containsKey(inv_slot))) return;
 
-        int hotbar_slot = ConfigManager.config.slotBinds.get(inv_slot);
-        hotbar_slot -= 36; //make 0-8
+        Minecraft mc = Minecraft.getMinecraft();
 
-        KeyBinding[] hotbarBindings = Minecraft.getMinecraft().gameSettings.keyBindsHotbar;
-        KeyBinding hotbarKey = hotbarBindings[hotbar_slot];
-        int keyCode = hotbarKey.getKeyCode();
+        int hotbar_slot = ConfigManager.config.slotBinds.get(inv_slot) - 36; // hotbar slot 0-8
+        EntityPlayerSP player = mc.thePlayer;
+        int window_id = player.openContainer.windowId;
 
-        fireGuiKey(keyCode);
+        mc.playerController.windowClick(window_id, inv_slot, hotbar_slot, 2, player);
         event.setCanceled(true);
     }
 
@@ -158,7 +158,7 @@ public class GuiClickHandler {
         GuiScreen screen = Minecraft.getMinecraft().currentScreen;
         if (screen == null) return;               // not inside a GUI
 
-        // 1. convert KEY_? → the character GuiContainer expects
+        // 1. convert KEY_? into the character GuiContainer expects
         char ch = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
                 Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
                 ? Keyboard.getKeyName(keyCode).toUpperCase().charAt(0)
@@ -167,7 +167,7 @@ public class GuiClickHandler {
         try {
             Method keyTyped = GuiScreen.class.getDeclaredMethod("keyTyped", char.class, int.class);
             keyTyped.setAccessible(true);
-            keyTyped.invoke(screen, ch, keyCode); // ← the inventory now thinks the user pressed the key
+            keyTyped.invoke(screen, ch, keyCode); // the inventory now thinks the user pressed the key
         } catch (Exception e) {
             e.printStackTrace();
         }
