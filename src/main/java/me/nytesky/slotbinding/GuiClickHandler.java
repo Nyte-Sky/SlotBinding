@@ -15,6 +15,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class GuiClickHandler {
 
@@ -81,7 +82,7 @@ public class GuiClickHandler {
 
         if (GuiKeyHandler.state == 1) SelectInventorySlot(slot, event);// select inv
         else if (GuiKeyHandler.state == 2) SelectHotbarSlot(slot, event);// select hotbar
-        else if (GuiKeyHandler.state == 0) HandleSwapClick(slot, event);
+        else if (GuiKeyHandler.state == 0) HandleSwapClick(clicked.getSlotIndex(), event);;
     }
     public static void SelectInventorySlot(int slot, Event event){
         if (slot > 35){ // not inv
@@ -137,22 +138,44 @@ public class GuiClickHandler {
             event.setCanceled(true);
     }
 
-    public static void HandleSwapClick(int inv_slot, Event event){
-        if (inv_slot > 35) return; // not inventory
-        // not holding shift -> return
-        if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
-        // not bound -> return
-        if (!(ConfigManager.config.slotBinds.containsKey(inv_slot))) return;
+    public static void HandleSwapClick(int invIndex, Event event) {
 
-        Minecraft mc = Minecraft.getMinecraft();
+        /* ---------- quick exits ---------- */
+        if (invIndex > 35) return; // not a main‑inventory slot
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) return;
+        if (!ConfigManager.config.slotBinds.containsKey(invIndex)) return;
 
-        int hotbar_slot = ConfigManager.config.slotBinds.get(inv_slot) - 36; // hotbar slot 0-8
-        EntityPlayerSP player = mc.thePlayer;
-        int window_id = player.openContainer.windowId;
+        Minecraft       mc     = Minecraft.getMinecraft();
+        EntityPlayerSP  player = mc.thePlayer;
 
-        mc.playerController.windowClick(window_id, inv_slot, hotbar_slot, 2, player);
+        /* ---------- find the real container slotIndex ---------- */
+        int containerSlotIndex = -1;
+
+        List<Slot> slots = player.openContainer.inventorySlots;
+        for (int i = 0; i < slots.size(); i++) {
+            Slot s = slots.get(i);
+            if (s.inventory == player.inventory && s.getSlotIndex() == invIndex) {
+                containerSlotIndex = i;
+                break;
+            }
+        }
+
+        if (containerSlotIndex == -1) return; // should never happen, but be safe
+
+        /* ---------- hot‑bar index (0‑8) ---------- */
+        int hotbarSlot = ConfigManager.config.slotBinds.get(invIndex) - 36;
+
+        /* ---------- perform vanilla HOTBAR_SWAP ---------- */
+        mc.playerController.windowClick(
+                player.openContainer.windowId,
+                containerSlotIndex,        // correct slot inside *this* container
+                hotbarSlot,                // 0‑8
+                2,                         // ClickType 2 = HOTBAR_SWAP
+                player);
+
         event.setCanceled(true);
     }
+
 
     public static void fireGuiKey(int keyCode) {
         GuiScreen screen = Minecraft.getMinecraft().currentScreen;
