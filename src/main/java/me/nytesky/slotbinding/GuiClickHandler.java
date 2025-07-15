@@ -162,24 +162,4 @@ public class GuiClickHandler {
         event.setCanceled(true);
     }
 
-
-    public static void fireGuiKey(int keyCode) {
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-        if (screen == null) return;               // not inside a GUI
-
-        // 1. convert KEY_? into the character GuiContainer expects
-        char ch = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ||
-                Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)
-                ? Keyboard.getKeyName(keyCode).toUpperCase().charAt(0)
-                : Keyboard.getKeyName(keyCode).toLowerCase().charAt(0);
-
-        try {
-            Method keyTyped = GuiScreen.class.getDeclaredMethod("keyTyped", char.class, int.class);
-            keyTyped.setAccessible(true);
-            keyTyped.invoke(screen, ch, keyCode); // the inventory now thinks the user pressed the key
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
