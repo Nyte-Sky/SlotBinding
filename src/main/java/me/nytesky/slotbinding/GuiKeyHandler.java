@@ -33,24 +33,20 @@ public class GuiKeyHandler {
         if (Objects.equals(keyName, bind_key_string)) {
             if (state == 0) {
                 state = 1;
-                Minecraft.getMinecraft().thePlayer.addChatMessage(
-                        new ChatComponentText("§6[SlotBinding] §fSelect inventory slot.")
-                );
+                SlotBinding.sendChat("fSelect inventory slot.");
+
             }
             else {
                 state = 0;
-                Minecraft.getMinecraft().thePlayer.addChatMessage(
-                        new ChatComponentText("§6[SlotBinding] §cSlot bind canceled.")
-                );
+                SlotBinding.sendChat("cSlot bind canceled.");
+
             }
             event.setCanceled(true);                // stop the inventory from handling it
         }
         else if (Objects.equals(keyName, "ESCAPE")) {
             if (state == 0) return;
             state = 0;
-            Minecraft.getMinecraft().thePlayer.addChatMessage(
-                    new ChatComponentText("§6[SlotBinding] §cSlot bind canceled.")
-            );
+            SlotBinding.sendChat("cSlot bind canceled.");
         }
     }
 }

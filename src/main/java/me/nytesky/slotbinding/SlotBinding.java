@@ -1,5 +1,7 @@
 package me.nytesky.slotbinding;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -27,4 +29,9 @@ public class SlotBinding {
         MinecraftForge.EVENT_BUS.register(new HoverEffect());
 
     }
+
+    public static void sendChat(String message) {
+        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("\u00A76[SlotBinding] \u00A7" + message + "\u00A7r"));
+    }
+
 }

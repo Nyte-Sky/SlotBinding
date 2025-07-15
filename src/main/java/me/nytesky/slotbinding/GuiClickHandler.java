@@ -86,50 +86,36 @@ public class GuiClickHandler {
     }
     public static void SelectInventorySlot(int slot, Event event){
         if (slot > 35){ // not inv
-            Minecraft.getMinecraft().thePlayer.addChatMessage(
-                    new ChatComponentText("§6[SlotBinding] §eCannot select slot on hotbar.")
-            );
+            SlotBinding.sendChat("eCannot select slot on hotbar.");
         }
         else { // inv, so select and advance state
             GuiKeyHandler.inv_slot = slot;
-            Minecraft.getMinecraft().thePlayer.addChatMessage(
-                    new ChatComponentText("§6[SlotBinding] §fSelected inventory slot!")
-            );
+            SlotBinding.sendChat("fSelected inventory slot!");
             GuiKeyHandler.state = 2;
-            Minecraft.getMinecraft().thePlayer.addChatMessage(
-                    new ChatComponentText("§6[SlotBinding] §fSelect hotbar slot.")
-            );
+            SlotBinding.sendChat("fSelect hotbar slot.");
         }
         event.setCanceled(true);
     }
     public static void SelectHotbarSlot(int slot, Event event){
             if (slot < 36){ // not hotbar
-                Minecraft.getMinecraft().thePlayer.addChatMessage(
-                        new ChatComponentText("§6[SlotBinding] §eCannot select slot in inventory")
-                );
+                SlotBinding.sendChat("eCannot select slot in inventory");
             }
             else { // hotbar, so select
                 GuiKeyHandler.hotbar_slot = slot;
-                Minecraft.getMinecraft().thePlayer.addChatMessage(
-                        new ChatComponentText("§6[SlotBinding] §fSelected hotbar slot!")
-                );
+                SlotBinding.sendChat("fSelected hotbar slot!");
                 GuiKeyHandler.state = 0;
                 // now check if binding already exists
                 if (!(ConfigManager.config.slotBinds.containsKey(GuiKeyHandler.inv_slot) &&
                         ConfigManager.config.slotBinds.get(GuiKeyHandler.inv_slot) == GuiKeyHandler.hotbar_slot)) {
                     // doesn't exist
-                    Minecraft.getMinecraft().thePlayer.addChatMessage(
-                            new ChatComponentText("§6[SlotBinding] §aAdded inventory-hotbar binding!")
-                    );
+                    SlotBinding.sendChat("aAdded inventory-hotbar binding!");
                     // so add
                     ConfigManager.config.slotBinds.put(GuiKeyHandler.inv_slot, GuiKeyHandler.hotbar_slot);
                     ConfigManager.save();
                 }
                 else {
                     // exists
-                    Minecraft.getMinecraft().thePlayer.addChatMessage(
-                            new ChatComponentText("§6[SlotBinding] §cRemoved inventory-hotbar binding.")
-                    );
+                    SlotBinding.sendChat("cRemoved inventory-hotbar binding.");
                     // so remove
                     ConfigManager.config.slotBinds.remove(GuiKeyHandler.inv_slot, GuiKeyHandler.hotbar_slot);
                     ConfigManager.save();
